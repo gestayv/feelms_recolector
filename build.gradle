@@ -25,6 +25,8 @@ dependencies {
 
 	compile group: 'org.twitter4j', name: 'twitter4j-stream', version: '4.0.5'
 	compile group: 'org.twitter4j', name: 'twitter4j-core', version: '4.0.5'
+	compile group: 'commons-io', name: 'commons-io', version: '2.5'
+	
 	
 
 }
