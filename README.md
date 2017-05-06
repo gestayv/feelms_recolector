@@ -1,9 +1,9 @@
-Para compilar
+Recolector de tweets para feelms:
 
-  gradle jar
-  
-Para ejecutar
+- Toma tweets que tengan palabras definidas en el archivo word.dat.
 
-  java -cp build/libs/twitter-streaming-1.0.jar cl.citiaps.twitter.streaming.TwitterStreaming
-  
- NO OLVIDAR modificar twitter4j.properties para agregar parámetros de autenticación
+- Los tweets que se obtienen desde twitter se guardan en una bd orientada a documentos.
+
+Compilar con: gradle jar
+
+Ejecutar con: java -cp build/libs/twitter-streaming-1.0.jar cl.feelms.twitter.streaming.TwitterStreaming

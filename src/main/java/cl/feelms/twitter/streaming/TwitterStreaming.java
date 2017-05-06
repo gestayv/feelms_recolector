@@ -1,4 +1,25 @@
-package cl.citiaps.twitter.streaming;
+package cl.feelms.twitter.streaming;
+
+import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
+import com.mongodb.ServerAddress;
+import com.mongodb.MongoCredential;
+import com.mongodb.MongoClientOptions;
+
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.MongoCollection;
+
+import org.bson.Document;
+import java.util.Arrays;
+import com.mongodb.Block;
+
+import com.mongodb.client.MongoCursor;
+import static com.mongodb.client.model.Filters.*;
+import com.mongodb.client.result.DeleteResult;
+import static com.mongodb.client.model.Updates.*;
+import com.mongodb.client.result.UpdateResult;
+import java.util.ArrayList;
+import java.util.List;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -14,10 +35,13 @@ import twitter4j.StatusListener;
 import twitter4j.TwitterStream;
 import twitter4j.TwitterStreamFactory;
 
+import org.bson.Document;
+
 public class TwitterStreaming {
 
 	private final TwitterStream twitterStream;
 	private Set<String> keywords;
+	public static MongoConn mongoConn = new MongoConn();
 
 	private TwitterStreaming() {
 		this.twitterStream = new TwitterStreamFactory().getInstance();
@@ -60,9 +84,29 @@ public class TwitterStreaming {
 
 			@Override
 			public void onStatus(Status status) {
+				/*
 				System.out.println(status.getId());
 				System.out.println(status.getText());
+				*/
 
+				/* 	Usar esto para filtrar países, por ahora solo se obtienen tweets en
+					español, independiente de la ubicación.
+				if(status.getPlace() != null)
+				{
+					System.out.println(status.getPlace().getCountryCode());
+				}
+				*/
+				if(status.getLang().equals("es"))
+				{
+
+					Document tweet = new Document("id", status.getId())
+										.append("user", status.getUser().getScreenName())
+										.append("name", status.getUser().getName())
+	               						.append("text", status.getText())
+										.append("rt_count", status.getRetweetCount());
+
+					mongoConn.getMColl().insertOne(tweet);
+				}
 			}
 		};
 
@@ -73,8 +117,22 @@ public class TwitterStreaming {
 		this.twitterStream.addListener(listener);
 		this.twitterStream.filter(fq);
 	}
-	
+
 	public static void main(String[] args) {
+
+		String user = "ichigo";
+ 		String database = "admin";
+ 		char[] password = {'x'};
+
+ 		mongoConn.setMC(MongoCredential.createCredential(user, database, password));
+
+ 		mongoConn.setMCl(new MongoClient(new ServerAddress("localhost", 27017),
+								Arrays.asList(mongoConn.getMC())));
+
+		mongoConn.setMDB(mongoConn.getMCl().getDatabase("feelms"));
+
+		mongoConn.setMColl(mongoConn.getMDB().getCollection("tweets"));
+
 		new TwitterStreaming().init();
 	}
 
