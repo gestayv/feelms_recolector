@@ -103,7 +103,8 @@ public class TwitterStreaming {
 										.append("user", status.getUser().getScreenName())
 										.append("name", status.getUser().getName())
 	               						.append("text", status.getText())
-										.append("rt_count", status.getRetweetCount());
+										.append("rt_count", status.getRetweetCount())
+                                                                .append("fecha", status.getCreatedAt().toString());
 
 					mongoConn.getMColl().insertOne(tweet);
 				}
@@ -120,9 +121,13 @@ public class TwitterStreaming {
 
 	public static void main(String[] args) {
 
-		String user = "ichigo";
- 		String database = "admin";
- 		char[] password = {'x'};
+                //  Usuario
+		String user = "";
+                //  BD donde está el usuario
+ 		String database = "";
+                //  Pass como arreglo de caracteres, ej: 
+                //  si la contraseña es pass, se escribe como {'p', 'a', 's', 's'}
+ 		char[] password = {};
 
  		mongoConn.setMC(MongoCredential.createCredential(user, database, password));
 
