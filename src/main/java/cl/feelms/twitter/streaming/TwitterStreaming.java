@@ -4,9 +4,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.ServerAddress;
 import com.mongodb.MongoCredential;
 
-
 import java.util.Arrays;
-
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -81,9 +79,6 @@ public class TwitterStreaming {
                         System.out.println(status.getPlace().getCountryCode());
                 }
                 */
-                
-                
-                
                 if(status.getLang().equals("es"))
                 {
                     Calendar cal = Calendar.getInstance();
@@ -152,27 +147,13 @@ public class TwitterStreaming {
     }
 
     public static void main(String[] args) {
-        /*
-            Obtener keywords desde BD
-            Guardar en words.dat?
-        */
+        
         int i = 0;
         
         KeywordRetrieval kr = new KeywordRetrieval();
         kr.conn();
-
-        //  Usuario
-        String user = "admin";
-        //  BD donde está el usuario
-        String database = "admin";   
-        //  Pass como arreglo de caracteres, ej: 
-        //  si la contraseña es pass, se escribe como {'p', 'a', 's', 's'}
-        char[] password = {'a', 'd', 'm', 'i', 'n', '1', '2', '3'};
-
-        mongoConn.setMC(MongoCredential.createCredential(user, database, password));
-
-        mongoConn.setMCl(new MongoClient(new ServerAddress("localhost", 27017),
-                                                        Arrays.asList(mongoConn.getMC())));
+        
+        mongoConn.setMCl(new MongoClient(new ServerAddress("localhost", 27017)));
 
         mongoConn.setMDB(mongoConn.getMCl().getDatabase("feelms"));
 
