@@ -36,7 +36,7 @@ public void conn()
             bw.newLine();
         }
         
-        //  Se cierra el archivo y la conexión a la bd.
+        //  Se cierra el archivo y la conexión a la bd respectivamente.
         bw.close();
         con.close();
     } catch (Exception e) {

@@ -1,30 +1,16 @@
 package cl.feelms.twitter.streaming;
 
 import com.mongodb.MongoClient;
-import com.mongodb.MongoClientURI;
 import com.mongodb.ServerAddress;
 import com.mongodb.MongoCredential;
-import com.mongodb.MongoClientOptions;
 
-import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.MongoCollection;
 
-import org.bson.Document;
 import java.util.Arrays;
-import com.mongodb.Block;
 
-import com.mongodb.client.MongoCursor;
-import static com.mongodb.client.model.Filters.*;
-import com.mongodb.client.result.DeleteResult;
-import static com.mongodb.client.model.Updates.*;
-import com.mongodb.client.result.UpdateResult;
-import java.util.ArrayList;
-import java.util.List;
 
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.Date;
 import java.util.Calendar;
 
 import org.apache.commons.io.IOUtils;
@@ -100,18 +86,48 @@ public class TwitterStreaming {
                 
                 if(status.getLang().equals("es"))
                 {
-                    Date fecha = status.getCreatedAt();
                     Calendar cal = Calendar.getInstance();
-                    //cal.setTime(fecha);
-
                     int yearT = cal.get(Calendar.YEAR);
                     int monthT = cal.get(Calendar.MONTH) + 1;
                     int dayT = cal.get(Calendar.DAY_OF_MONTH);
+                    String mString = Integer.toString(monthT);
+                    String dString = Integer.toString(dayT);
+                    
+                    if(monthT < 10)
+                    {
+                        mString = "0"+mString;
+                    }
+                    
+                    if(dayT < 10)
+                    {
+                        dString = "0"+dString;
+                    }
 
-                    ArrayList<String> ht = new ArrayList<String>();
-                
-                    for (TweetEntity e : status.getHashtagEntities()) {
-                        ht.add(e.getText());
+                    int htNumber = status.getHashtagEntities().length;
+                    int htCounter = 1;
+                    String ht = " ";
+                    
+                    
+                    if(htNumber > 0)
+                    {
+                        ht = "";
+                        for (TweetEntity e : status.getHashtagEntities()) 
+                        {
+                            if(htCounter == 1)
+                            {
+                                ht = e.getText();
+                            }
+                            else if(htCounter ==  status.getHashtagEntities().length - 1)
+                            {
+                                ht = ht+e.getText();
+                                htCounter++;
+                            }
+                            else
+                            {
+                                ht = ht+" "+e.getText()+" ";
+                                htCounter++;
+                            }
+                        }
                     }
                     
                     Document tweet = new Document("id", status.getId())
@@ -119,7 +135,7 @@ public class TwitterStreaming {
                                         .append("name", status.getUser().getName())
                                         .append("text", status.getText())
                                         .append("rt_count", status.getRetweetCount())
-                                        .append("fecha", yearT+"-"+monthT+"-"+dayT)
+                                        .append("fecha", yearT+"-"+mString+"-"+dString)
                                         .append("hashtag", ht);
 
                     mongoConn.getMColl().insertOne(tweet);
