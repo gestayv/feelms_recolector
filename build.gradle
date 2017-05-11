@@ -10,7 +10,7 @@ version = '1.0'
 
 jar {
     manifest {
-        attributes 'Implementation-Title': 'twitter-streaming', 'Implementation-Version': version
+        attributes 'Implementation-Title': 'twitter-streaming', 'Implementation-Version': version, "Main-Class": "TwitterStreaming"
     }
     dependsOn configurations.runtime
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }

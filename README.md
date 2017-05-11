@@ -6,4 +6,4 @@ Recolector de tweets para feelms:
 
 Compilar con: gradle jar
 
-Ejecutar con: java -cp build/libs/twitter-streaming-1.0.jar cl.feelms.twitter.streaming.TwitterStreaming
+Ejecutar con: java -cp build/libs/feelms_recolector-1.0.jar cl.feelms.twitter.streaming.TwitterStreaming
