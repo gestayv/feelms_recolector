@@ -72,14 +72,23 @@ public class TwitterStreaming {
 
             @Override
             public void onStatus(Status status) {
-                String country;
+                String country, lt, lg;
                 try
                 {
                     country = status.getPlace().getCountryCode();
-                    
                 }catch(NullPointerException e)
                 {
                     country = "vacio";
+                }
+                
+                try
+                {
+                    lt = Double.toString(status.getGeoLocation().getLatitude());
+                    lg = Double.toString(status.getGeoLocation().getLongitude());
+                }catch(NullPointerException e)
+                {
+                    lt = "none";
+                    lg = "none";
                 }
                 
                 if(status.getLang().equals("es") && country.equals("CL"))
@@ -133,7 +142,9 @@ public class TwitterStreaming {
                                         .append("text", status.getText())
                                         .append("rt_count", status.getRetweetCount())
                                         .append("fecha", yearT+"-"+mString+"-"+dString)
-                                        .append("hashtag", ht);
+                                        .append("hashtag", ht)
+                                        .append("longitud", lg)
+                                        .append("latitud", lt);
 
                     mongoConn.getMColl().insertOne(tweet);
                 }
