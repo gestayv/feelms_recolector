@@ -72,14 +72,17 @@ public class TwitterStreaming {
 
             @Override
             public void onStatus(Status status) {
-                /* 	Usar esto para filtrar países, por ahora solo se obtienen tweets en
-                        español, independiente de la ubicación.
-                if(status.getPlace() != null)
+                String country;
+                try
                 {
-                        System.out.println(status.getPlace().getCountryCode());
+                    country = status.getPlace().getCountryCode();
+                    
+                }catch(NullPointerException e)
+                {
+                    country = "vacio";
                 }
-                */
-                if(status.getLang().equals("es"))
+                
+                if(status.getLang().equals("es") && country.equals("CL"))
                 {
                     Calendar cal = Calendar.getInstance();
                     int yearT = cal.get(Calendar.YEAR);
@@ -87,7 +90,6 @@ public class TwitterStreaming {
                     int dayT = cal.get(Calendar.DAY_OF_MONTH);
                     String mString = Integer.toString(monthT);
                     String dString = Integer.toString(dayT);
-                    
                     if(monthT < 10)
                     {
                         mString = "0"+mString;
@@ -150,7 +152,7 @@ public class TwitterStreaming {
         
         int i = 0;
         
-        KeywordRetrieval kr = new KeywordRetrieval();
+        KeywordRetrieval kr = new KeywordRetrieval("root", "root", "localhost", "3306", "feelms_sql");
         kr.conn();
         
         mongoConn.setMCl(new MongoClient(new ServerAddress("localhost", 27017)));
