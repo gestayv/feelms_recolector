@@ -72,33 +72,38 @@ public class TwitterStreaming {
 
             @Override
             public void onStatus(Status status) {
-                String country, lt, lg;
+                String country;
                 try
                 {
                     country = status.getPlace().getCountryCode();
                 }catch(NullPointerException e)
                 {
-                    country = "vacio";
+                    country = "none";
                 }
                 
-                try
+                if(status.getLang().equals("es"))
                 {
-                    lt = Double.toString(status.getGeoLocation().getLatitude());
-                    lg = Double.toString(status.getGeoLocation().getLongitude());
-                }catch(NullPointerException e)
-                {
-                    lt = "none";
-                    lg = "none";
-                }
-                
-                if(status.getLang().equals("es") && country.equals("CL"))
-                {
+                    //  Se obtienen la latitud y longitud para georef.
+                    String lt, lg;
+                    try
+                    {
+                        lt = Double.toString(status.getGeoLocation().getLatitude());
+                        lg = Double.toString(status.getGeoLocation().getLongitude());
+                    }catch(NullPointerException e)
+                    {
+                        lt = "none";
+                        lg = "none";
+                    }
+                    
+                    //  Se obtiene la fecha en que se recuperan el o los tweets.
                     Calendar cal = Calendar.getInstance();
                     int yearT = cal.get(Calendar.YEAR);
                     int monthT = cal.get(Calendar.MONTH) + 1;
                     int dayT = cal.get(Calendar.DAY_OF_MONTH);
                     String mString = Integer.toString(monthT);
                     String dString = Integer.toString(dayT);
+                    //  Arreglos a la fecha para agregar un 0 en caso de que 
+                    //  el día o mes sean menores a 10.
                     if(monthT < 10)
                     {
                         mString = "0"+mString;
@@ -109,11 +114,12 @@ public class TwitterStreaming {
                         dString = "0"+dString;
                     }
 
+                    //  Se obtienen los hashtags
                     int htNumber = status.getHashtagEntities().length;
                     int htCounter = 1;
                     String ht = " ";
-                    
-                    
+                    //  Se toman todos los ht y se dejan como un string donde
+                    //  cada uno está separado por espacios.
                     if(htNumber > 0)
                     {
                         ht = "";
@@ -136,6 +142,7 @@ public class TwitterStreaming {
                         }
                     }
                     
+                    //  Se crea un documento y se inserta en la colección tweet.
                     Document tweet = new Document("id", status.getId())
                                         .append("user", status.getUser().getScreenName())
                                         .append("name", status.getUser().getName())
@@ -144,7 +151,8 @@ public class TwitterStreaming {
                                         .append("fecha", yearT+"-"+mString+"-"+dString)
                                         .append("hashtag", ht)
                                         .append("longitud", lg)
-                                        .append("latitud", lt);
+                                        .append("latitud", lt)
+                                        .append("pais", country);
 
                     mongoConn.getMColl().insertOne(tweet);
                 }
