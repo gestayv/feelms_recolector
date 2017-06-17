@@ -36,7 +36,7 @@ public class KeywordRetrieval {
 
             //  Conexión a SQL
             Class.forName("com.mysql.cj.jdbc.Driver");
-            String urlConn = "jdbc:mysql://"+this.host+":"+this.port+"/"+this.db_name;
+            String urlConn = "jdbc:mysql://"+this.host+":"+this.port+"/"+this.db_name+"?serverTimezone=UTC";
             String query = "SELECT term FROM key_terms";
             Connection con = DriverManager.getConnection(urlConn, this.usr, this.pwd);
             Statement stmt = con.createStatement();
